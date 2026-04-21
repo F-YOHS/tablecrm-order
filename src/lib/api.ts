@@ -76,6 +76,17 @@ export async function createSale(payload: Record<string, unknown>) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  if (!res.ok) {
+    let detail = '';
+    try {
+      const err = await res.json();
+      detail = err?.detail
+        ? (Array.isArray(err.detail)
+            ? err.detail.map((e: Record<string, unknown>) => `${e.loc?.slice(-1)[0]}: ${e.msg}`).join(', ')
+            : String(err.detail))
+        : JSON.stringify(err);
+    } catch { detail = res.statusText; }
+    throw new Error(`Ошибка ${res.status}: ${detail}`);
+  }
   return res.json();
 }

@@ -258,19 +258,19 @@ export default function OrderPage() {
     try {
       const payload: Record<string, unknown> = {
         paybox_id: Number(payboxId),
-        organization_id: Number(organizationId),
-        warehouse_id: Number(warehouseId),
-        price_type_id: Number(priceTypeId),
+        organization: Number(organizationId),
+        warehouse: Number(warehouseId),
+        price_type: Number(priceTypeId),
         is_conducted: isConducted,
         comment: comment.trim() || undefined,
-        items: orderItems.map((item) => ({
-          nomenclature_id: item.nomenclature_id,
+        goods: orderItems.map((item) => ({
+          nomenclature: item.nomenclature_id,
           quantity: item.quantity,
           price: item.price,
-          amount: item.amount,
+          price_type: Number(priceTypeId),
         })),
       };
-      if (contragent?.id) payload.contragent_id = contragent.id;
+      if (contragent?.id) payload.contragent = contragent.id;
 
       const result = await createSale(payload);
       const docNum = result?.number || result?.id || "";
