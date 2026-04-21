@@ -257,7 +257,7 @@ export default function OrderPage() {
     setSubmitting(true);
     try {
       const payload: Record<string, unknown> = {
-        paybox_id: Number(payboxId),
+        paybox: Number(payboxId),
         organization: Number(organizationId),
         warehouse: Number(warehouseId),
         price_type: Number(priceTypeId),
