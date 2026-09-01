@@ -40,7 +40,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
 
 interface Named {
   id: number;
@@ -66,7 +65,6 @@ interface OrderItem {
   amount: number;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function label(item: Named): string {
   return item.name || item.title || String(item.id);
@@ -82,42 +80,36 @@ function getPriceForType(item: Nomenclature, priceTypeId: string): number {
   return item.price ?? 0;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
 
 export default function OrderPage() {
   const router = useRouter();
 
-  // Reference data
   const [warehouses, setWarehouses] = useState<Named[]>([]);
   const [payboxes, setPayboxes] = useState<Named[]>([]);
   const [organizations, setOrganizations] = useState<Named[]>([]);
   const [priceTypes, setPriceTypes] = useState<Named[]>([]);
   const [loadingRef, setLoadingRef] = useState(true);
 
-  // Customer
   const [phone, setPhone] = useState("");
   const [searching, setSearching] = useState(false);
   const [contragent, setContragent] = useState<Contragent | null>(null);
   const [contragentNotFound, setContragentNotFound] = useState(false);
 
-  // Form selections
   const [payboxId, setPayboxId] = useState("");
   const [organizationId, setOrganizationId] = useState("");
   const [warehouseId, setWarehouseId] = useState("");
   const [priceTypeId, setPriceTypeId] = useState("");
   const [comment, setComment] = useState("");
 
-  // Products
   const [productSearch, setProductSearch] = useState("");
   const [productResults, setProductResults] = useState<Nomenclature[]>([]);
   const [searchingProducts, setSearchingProducts] = useState(false);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Submitting
   const [submitting, setSubmitting] = useState(false);
 
-  // ── Auth guard ─────────────────────────────────────────────────────────────
+  // Auth guard
 
   useEffect(() => {
     if (!getToken()) {
@@ -125,7 +117,6 @@ export default function OrderPage() {
     }
   }, [router]);
 
-  // ── Load reference data ────────────────────────────────────────────────────
 
   useEffect(() => {
     async function load() {
@@ -150,7 +141,6 @@ export default function OrderPage() {
     if (getToken()) load();
   }, []);
 
-  // ── Customer search ────────────────────────────────────────────────────────
 
   const handlePhoneSearch = async () => {
     if (!phone.trim()) return;
@@ -172,7 +162,7 @@ export default function OrderPage() {
     }
   };
 
-  // ── Product search with debounce ───────────────────────────────────────────
+  // Product search with debounce
 
   const handleProductSearchChange = useCallback(
     (value: string) => {
@@ -241,11 +231,9 @@ export default function OrderPage() {
     setOrderItems((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // ── Running total ──────────────────────────────────────────────────────────
 
   const total = orderItems.reduce((sum, item) => sum + item.amount, 0);
 
-  // ── Submission ─────────────────────────────────────────────────────────────
 
   const handleSubmit = async (isConducted: boolean) => {
     if (!payboxId) { toast.error("Выберите счёт (кассу)"); return; }
@@ -277,7 +265,6 @@ export default function OrderPage() {
       toast.success(
         `Продажа ${docNum ? `#${docNum}` : ""} ${isConducted ? "создана и проведена" : "создана"}`
       );
-      // Reset form
       setPhone("");
       setContragent(null);
       setContragentNotFound(false);
@@ -296,7 +283,6 @@ export default function OrderPage() {
     router.push("/");
   };
 
-  // ─── Render ─────────────────────────────────────────────────────────────────
 
   if (loadingRef) {
     return (
